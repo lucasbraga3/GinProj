@@ -67,7 +67,7 @@ func (uc *UserController) UpdateUser(ctx *gin.Context) {
 }
 
 func (uc *UserController) DeleteUser(ctx *gin.Context) {
-	username := ctx.Param("name")
+	username := ctx.Param("email")
 	err := uc.UserService.DeleteUser(&username)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})

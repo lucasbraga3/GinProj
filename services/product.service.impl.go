@@ -107,8 +107,8 @@ func (p *ProductServiceImpl) UpdateProduct(product *models.Product) error {
 	return nil
 }
 
-func (p *ProductServiceImpl) DeleteProduct(product *models.Product) error {
-	filter := bson.D{bson.E{Key: "id", Value: product.Id}}
+func (p *ProductServiceImpl) DeleteProduct(productid *int64) error {
+	filter := bson.D{bson.E{Key: "id", Value: productid}}
 	result, _ := p.productcollection.DeleteOne(p.ctx, filter)
 	if result.DeletedCount != 1 {
 		return errors.New("Not found any doc to delete")
