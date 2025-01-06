@@ -16,13 +16,16 @@ import (
 )
 
 var (
-	server         *gin.Engine
-	userservice    services.UserService
-	usercontroller controllers.UserController
-	ctx            context.Context
-	usercolleccion *mongo.Collection
-	mongoclient    *mongo.Client
-	err            error
+	server            *gin.Engine
+	userservice       services.UserService
+	usercontroller    controllers.UserController
+	productservice    services.ProductService
+	productcontroller controllers.ProductController
+	ctx               context.Context
+	usercolleccion    *mongo.Collection
+	productcollection *mongo.Collection
+	mongoclient       *mongo.Client
+	err               error
 )
 
 func init() {
@@ -31,7 +34,7 @@ func init() {
 	if err != nil {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
-	//mongodb://user:password@localhost:27017
+	//mongodb://user:password@localhost:0000
 	credential := options.Credential{
 		Username:   os.Getenv("USER"),
 		Password:   os.Getenv("PWD"),
@@ -53,6 +56,9 @@ func init() {
 	usercolleccion = mongoclient.Database(dbname).Collection("users")
 	userservice = services.NewUserService(usercolleccion, ctx)
 	usercontroller = controllers.New(userservice)
+	productcollection = mongoclient.Database(dbname).Collection("products")
+	productservice = services.NewProductService(productcollection, ctx)
+	productcontroller = controllers.NewProductController(productservice)
 	server = gin.Default()
 }
 
@@ -61,5 +67,6 @@ func main() {
 
 	basepath := server.Group("/api")
 	usercontroller.RegisterUserRoutes(basepath)
+	productcontroller.RegisterProductRoutes(basepath)
 	log.Fatal(server.Run(":8080"))
 }

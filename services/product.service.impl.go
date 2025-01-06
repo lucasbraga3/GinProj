@@ -102,7 +102,7 @@ func (p *ProductServiceImpl) UpdateProduct(product *models.Product) error {
 		bson.E{Key: "quantity", Value: product.Quantity}}}}
 	result, _ := p.productcollection.UpdateOne(p.ctx, filter, update)
 	if result.MatchedCount != 1 {
-		return errors.New("Not found any doc to update")
+		return errors.New("not found any doc to update")
 	}
 	return nil
 }
@@ -111,7 +111,7 @@ func (p *ProductServiceImpl) DeleteProduct(productid *int64) error {
 	filter := bson.D{bson.E{Key: "id", Value: productid}}
 	result, _ := p.productcollection.DeleteOne(p.ctx, filter)
 	if result.DeletedCount != 1 {
-		return errors.New("Not found any doc to delete")
+		return errors.New("not found any doc to delete")
 	}
 	return nil
 }

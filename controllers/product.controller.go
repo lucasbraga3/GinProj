@@ -25,7 +25,7 @@ func (pc *ProductController) CreateProduct(ctx *gin.Context) {
 		return
 	}
 	gaterr := pc.ProductService.CreateProduct(&product)
-	if reqerr != nil {
+	if gaterr != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": gaterr.Error()})
 		return
 	}
@@ -83,7 +83,7 @@ func (pc *ProductController) UpdateProduct(ctx *gin.Context) {
 		return
 	}
 	gaterr := pc.ProductService.UpdateProduct(&product)
-	if reqerr != nil {
+	if gaterr != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": gaterr.Error()})
 		return
 	}
@@ -91,7 +91,11 @@ func (pc *ProductController) UpdateProduct(ctx *gin.Context) {
 }
 
 func (pc *ProductController) DeleteProduct(ctx *gin.Context) {
-	productid := ctx.Param("id")
+	productid, converr := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if converr != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": converr.Error()})
+		return
+	}
 	err := pc.ProductService.DeleteProduct(&productid)
 	if err != nil {
 		ctx.JSON(http.StatusBadGateway, gin.H{"message": err.Error()})
@@ -100,4 +104,13 @@ func (pc *ProductController) DeleteProduct(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, "SUCCESS")
 }
 
-func (pc *ProductController) RegisterProductRoutes(router *gin.RouterGroup) {}
+func (pc *ProductController) RegisterProductRoutes(router *gin.RouterGroup) {
+	productroutes := router.Group("/products")
+	productroutes.POST("/create", pc.CreateProduct)
+	productroutes.GET("/all", pc.GetAll)
+	productroutes.GET("/get/:id", pc.GetProductbyid)
+	productroutes.GET("/getname/:name", pc.GetProductsbyName)
+	productroutes.GET("/getcat/:category", pc.GetProductsbyCategory)
+	productroutes.PATCH("/update", pc.UpdateProduct)
+	productroutes.DELETE("/delete", pc.DeleteProduct)
+}
