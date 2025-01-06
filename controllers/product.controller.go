@@ -107,7 +107,7 @@ func (pc *ProductController) DeleteProduct(ctx *gin.Context) {
 func (pc *ProductController) RegisterProductRoutes(router *gin.RouterGroup) {
 	productroutes := router.Group("/products")
 	productroutes.POST("/create", pc.CreateProduct)
-	productroutes.GET("/all", pc.GetAll)
+	productroutes.GET("/getall", pc.GetAll)
 	productroutes.GET("/get/:id", pc.GetProductbyid)
 	productroutes.GET("/getname/:name", pc.GetProductsbyName)
 	productroutes.GET("/getcat/:category", pc.GetProductsbyCategory)
